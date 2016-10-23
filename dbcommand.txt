@@ -1,0 +1,30 @@
+CREATE DATABASE ssxz DEFAULT CHARACTER SET utf8;
+
+SHOW DATABASES;
+
+CREATE USER s_user1 IDENTIFIED BY 's_user1';
+
+GRANT ALL PRIVILEGES ON ssxz.* TO s_user1@localhost IDENTIFIED BY 's_user1'
+
+mysql -u s_user1 -D ssxz -p
+
+USE ssxz；
+
+create table ssxz.user(name varchar(20), password varchar(10), authorityid int(3));
+
+create table ssxz.authority(authorityid int(3) not null primary key, ifcreate int(1), ifupdate int(1), ifdelete int(1));
+// alter table authority add constraint PK_AUTHORITY primary key(authorityid);
+
+create table ssxz.resourceinfo(machineid int(3), aeraid int(3), capacity int(20), status int(1)) PRIMARY KEY(machineid, aeraid);
+
+//  alter table resourceinfo add constraint PK_RESOURCEINFO primary key(machineid,aeraid);
+
+// データ投入用SQL
+insert into user values('s_user1', 's_user1', 1);
+insert into authority values(1, 1, 1, 1);
+insert into resourceinfo values(1, 1, 100000, 1);
+insert into resourceinfo values(1, 2, 100000, 2);
+insert into resourceinfo values(1, 3, 100000, 3);
+insert into resourceinfo values(1, 4, 100000, 4);
+
+quit
