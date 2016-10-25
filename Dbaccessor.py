@@ -9,14 +9,14 @@ class Dbaccessor:
         try:
             # get database connection
             self.connector = mysql.connector.connect(host="localhost", db="ssxz", user="s_user1", passwd="s_user1", charset="utf8") 
-        except mysql.connector.Error as e
+        except mysql.connector.Error as e:
             print("can't get db connection: {}".format(e))
       
     # insert a record into resourceinfo
     def insertResourceInfo(self, machineid, aeraid, capacity, status):
         try:
             cursor = self.connector.cursor() 
-            cursor.execute("insert into resourceinfo values(%d, %d, %d, %d)", (machineid, aeraid, capacity, status))
+            cursor.execute("insert into resourceinfo values(%s, %s, %s, %s)", (machineid, aeraid, capacity, status))
             cursor.close()
         except mysql.connector.Error as e:
             print("insert error:" + e.errno + ":" + e.msg)
@@ -25,7 +25,7 @@ class Dbaccessor:
     def selectResourceInfo(self, machineid, aeraid):
         try:
             cursor = self.connector.cursor() 
-            cursor.execute("select status from resourceinfo where machineid=%d and aeraid=%d", (machineid, aeraid))
+            cursor.execute("select status from resourceinfo where machineid=%s and aeraid=%s", (machineid, aeraid))
             result = cursor.fetchall()
             status = result[0][0]
             cursor.close()
@@ -38,18 +38,18 @@ class Dbaccessor:
     def updateResourceInfo(self, machineid, aeraid, status):
         try:
             cursor = self.connector.cursor() 
-            cursor.execute("update resourceinfo set status=%d where machineid=%d and aeraid=%d", (status, machineid, aeraid)) 
+            cursor.execute("update resourceinfo set status=%s where machineid=%s and aeraid=%s", (status, machineid, aeraid)) 
             cursor.close()
-        except mysql.connector.Error as e
+        except mysql.connector.Error as e:
             print("update error:" + e.errno + ":" + e.msg)
 
     # delete resource info
     def deleteResourceInfo(self, machineid, aeraid):
         try:
             cursor = self.connector.cursor() 
-            cursor.execute("delete from resourceinfo where machineid=%d and aeraid=%d", (machineid, aeraid))
+            cursor.execute("delete from resourceinfo where machineid=%s and aeraid=%s", (machineid, aeraid))
             cursor.close()
-        except mysql.connector.Error as e
+        except mysql.connector.Error as e:
             print("update error:" + e.errno + ":" + e.msg)
         
     # commit
