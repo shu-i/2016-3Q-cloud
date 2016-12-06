@@ -1,30 +1,90 @@
+
 CREATE DATABASE ssxz DEFAULT CHARACTER SET utf8;
 
 SHOW DATABASES;
 
 CREATE USER s_user1 IDENTIFIED BY 's_user1';
 
-GRANT ALL PRIVILEGES ON ssxz.* TO s_user1@localhost IDENTIFIED BY 's_user1'
+GRANT ALL PRIVILEGES ON ssxz.* TO s_user1@localhost IDENTIFIED BY 'Qwer1234@'
 
 mysql -u s_user1 -D ssxz -p
 
-USE ssxzÅG
+USE ssxz¬ÅG
 
-create table ssxz.user(name varchar(20), password varchar(10), authorityid int(3));
+#create table ssxz.user(name varchar(20), password varchar(10), authorityid int(3));
 
-create table ssxz.authority(authorityid int(3) not null primary key, ifcreate int(1), ifupdate int(1), ifdelete int(1));
+#create table ssxz.authority(authorityid int(3) not null primary key, ifcreate int(1), ifupdate int(1), ifdelete int(1));
 // alter table authority add constraint PK_AUTHORITY primary key(authorityid);
 
-create table ssxz.resourceinfo(machineid int(3), aeraid int(3), capacity int(20), status int(1)) PRIMARY KEY(machineid, aeraid);
+create table resourceinfo(instanceid int(8), machineid int(3), cpus int(3), memocapacity int(20), diskcapacity int(20), status int(1), instancename vachar(20), ip vachar(15)) PRIMARY KEY(instanceid);
 
-//  alter table resourceinfo add constraint PK_RESOURCEINFO primary key(machineid,aeraid);
+create table totalinfo(machineid int(3), cpus int(3), memocapacity int(20), diskcapacity int(20)) PRIMARY KEY(machineid);
 
-// ÉfÅ[É^ìäì¸ópSQL
-insert into user values('s_user1', 's_user1', 1);
-insert into authority values(1, 1, 1, 1);
-insert into resourceinfo values(1, 1, 100000, 1);
-insert into resourceinfo values(1, 2, 100000, 2);
-insert into resourceinfo values(1, 3, 100000, 3);
-insert into resourceinfo values(1, 4, 100000, 4);
+
+create table sshkey(instancename varchar(20), sshkey varchar(2500));
+
+DROP TABLE IF EXISTS sequence;
+CREATE TABLE sequence (
+    name VARCHAR(50) NOT NULL,
+    current_value INT NOT NULL,
+    increment INT NOT NULL DEFAULT 1,
+    PRIMARY KEY (name)
+) ENGINE=InnoDB;
+
+DROP FUNCTION IF EXISTS currval;
+DELIMITER $
+CREATE FUNCTION currval (seq_name VARCHAR(50))
+    RETURNS INTEGER
+    LANGUAGE SQL
+    DETERMINISTIC
+    CONTAINS SQL
+    SQL SECURITY DEFINER
+    COMMENT ''
+BEGIN
+    DECLARE value INTEGER;
+    SET value = 0;
+    SELECT current_value INTO value
+        FROM sequence
+        WHERE name = seq_name;
+    RETURN value;
+END
+$
+DELIMITER ;
+
+DROP FUNCTION IF EXISTS nextval;
+DELIMITER $
+CREATE FUNCTION nextval (seq_name VARCHAR(50))
+    RETURNS INTEGER
+    LANGUAGE SQL
+    DETERMINISTIC
+    CONTAINS SQL
+    SQL SECURITY DEFINER
+    COMMENT ''
+BEGIN
+    UPDATE sequence
+    SET current_value = current_value + increment
+    WHERE name = seq_name;
+    RETURN currval(seq_name);
+END
+$
+DELIMITER ;
+
+DROP FUNCTION IF EXISTS setval;
+DELIMITER $
+CREATE FUNCTION setval (seq_name VARCHAR(50), value INTEGER)
+    RETURNS INTEGER
+    LANGUAGE SQL
+    DETERMINISTIC
+    CONTAINS SQL
+    SQL SECURITY DEFINER
+    COMMENT ''
+BEGIN
+    UPDATE sequence
+    SET current_value = value
+    WHERE name = seq_name;
+    RETURN currval(seq_name);
+END
+$
+DELIMITER ;
 
 quit
